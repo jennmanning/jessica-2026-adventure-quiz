@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Merry Christmas, Jessica – 2026 Adventure Match</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      --bg: #fdfbf7;
+      --card: #ffffff;
+      --gold: #d9a441;
+      --gold-soft: #f4e0b0;
+      --gold-deep: #b8860b;
+      --text-main: #3b3529;
+      --text-muted: #7b7466;
+      --border-soft: #e7ddc7;
+      --shadow-soft: 0 14px 35px rgba(0, 0, 0, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 16px;
+      background:
+        radial-gradient(circle at top left, rgba(217, 164, 65, 0.18), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(244, 232, 209, 0.9), #faf4e9);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 900px;
+      background: rgba(255, 255, 255, 0.96);
+      border-radius: 22px;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: var(--shadow-soft);
+      padding: 18px 16px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sparkle-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.5) 0, transparent 45%),
+        radial-gradient(circle at 80% 0%, rgba(255, 255, 255, 0.4) 0, transparent 55%);
+      opacity: 0.75;
+      mix-blend-mode: screen;
+    }
+
+    .top-image {
+      width: 100%;
+      border-radius: 18px;
+      margin-bottom: 12px;
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.18);
+    }
+
+    h1 {
+      font-size: 1.9rem;
+      margin: 0 0 0.25em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    h1 span.emoji {
+      font-size: 1.9rem;
+    }
+
+    .subtitle {
+      margin: 0 0 14px;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .badge-bar {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+      font-size: 0.75rem;
+      position: relative;
+    }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(233, 213, 175, 0.9);
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .start-screen {
+      margin-top: 4px;
+      margin-bottom: 10px;
+      padding: 16px 14px 18px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #fffaf1, #f5e0bd);
+      border: 1px solid rgba(217, 164, 65, 0.6);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .start-btn {
+      padding: 10px 20px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, #d9a441, #f6e3b1);
+      color: #3b2b0c;
+      font-weight: 600;
+      font-size: 0.95rem;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .quiz-card { display: none; }
+
+    .question {
+      margin-bottom: 12px;
+      padding: 12px 12px 10px;
+      border-radius: 16px;
+      background: var(--card);
+      border: 1px solid var(--border-soft);
+    }
+
+    label {
+      display: block;
+      margin: 4px 0;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    input[type="radio"] {
+      margin-right: 7px;
+      accent-color: #d9a441;
+    }
+
+    #loading {
+      margin-top: 16px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid #e2d2b4;
+      background: #fff9ef;
+      display: none;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid #f2dfb8;
+      border-top-color: #b8860b;
+      display: inline-block;
+      margin-right: 8px;
+      animation: spin 0.9s linear infinite;
+      vertical-align: text-bottom;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    #result {
+      margin-top: 18px;
+      padding: 14px 14px 12px;
+      border-radius: 16px;
+      border: 1px solid #e1d2b6;
+      background: linear-gradient(135deg, #fff9ef, #f4e3c3);
+      display: none;
+    }
+
+    .trip-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: #8b6614;
+    }
+
+    .result-body {
+      font-size: 0.94rem;
+      color: var(--text-main);
+      margin-bottom: 6px;
+    }
+
+    /* Confetti */
+    .confetti {
+      position: fixed;
+      top: -10px;
+      width: 8px;
+      height: 14px;
+      opacity: 0.9;
+      border-radius: 2px;
+      pointer-events: none;
+      z-index: 9999;
+      animation: fall 2.4s linear forwards;
+    }
+
+    @keyframes fall {
+      0% { transform: translate3d(0, -10px, 0) rotateZ(0deg); }
+      100% {
+        transform: translate3d(0, 110vh, 0) rotateZ(360deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <div class="sparkle-overlay"></div>
+
+    <img src="Merry Christmas.png" class="top-image" />
+    <img src="Which Trip Will It Be.png" class="top-image" />
+
+    <h1><span class="emoji">🎄</span>Merry Christmas, Jessica</h1>
+    <p class="subtitle">
+      You’ve seen the options — now let's find your ideal 2026 adventure.
+    </p>
+
+    <div class="start-screen" id="startScreen">
+      <p>Answer five quick questions to reveal your perfect 2026 trip.</p>
+      <button class="start-btn" onclick="startQuiz()">Start Quiz</button>
+    </div>
+
+    <div id="quizCard" class="quiz-card">
+      
+      <form id="tripQuiz">
+
+        <div class="question">
+          <p><strong>1.</strong> What kind of energy do you want this trip to have?</p>
+          <label><input type="radio" name="q1" value="A"> Calm and restorative.</label>
+          <label><input type="radio" name="q1" value="B"> A balanced mix.</label>
+          <label><input type="radio" name="q1" value="C"> Lively and exciting.</label>
+        </div>
+
+        <div class="question">
+          <p><strong>2.</strong> What type of scenery excites you most?</p>
+          <label><input type="radio" name="q2" value="A"> Pretty streets & architecture</label>
+          <label><input type="radio" name="q2" value="B"> Waterfront towns</label>
+          <label><input type="radio" name="q2" value="C"> Magical evenings / sunsets</label>
+          <label><input type="radio" name="q2" value="D"> Nature / cliffs / lakes</label>
+          <label><input type="radio" name="q2" value="E"> A mix of everything</label>
+        </div>
+
+        <div class="question">
+          <p><strong>3.</strong> How different from home do you want the culture to feel?</p>
+          <label><input type="radio" name="q3" value="A"> Familiar & easy</label>
+          <label><input type="radio" name="q3" value="B"> A bit different</label>
+          <label><input type="radio" name="q3" value="C"> Very different & magical</label>
+        </div>
+
+        <div class="question">
+          <p><strong>4.</strong> Do you want to drive during this trip?</p>
+          <label><input type="radio" name="q4" value="A"> Yes – road trip vibes</label>
+          <label><input type="radio" name="q4" value="B"> A little is fine</label>
+          <label><input type="radio" name="q4" value="C"> Prefer not to drive</label>
+        </div>
+
+        <div class="question">
+          <p><strong>5.</strong> What’s your ideal daily pace?</p>
+          <label><input type="radio" name="q5" value="A"> Mostly relaxing</label>
+          <label><input type="radio" name="q5" value="B"> Mixed / balanced</label>
+          <label><input type="radio" name="q5" value="C"> Full days & exploring</label>
+        </div>
+
+        <button type="button" class="start-btn" onclick="calculateResult()">
+          Reveal My 2026 Adventure
+        </button>
+
+      </form>
+
+      <div id="loading">
+        <span class="spinner"></span> Calculating your perfect adventure…
+      </div>
+
+      <div id="result"></div>
+
+      <div id="revealImageContainer" style="margin-top:16px; display:none;">
+        <img id="revealImage" src="" style="width:100%; border-radius:18px;" />
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function startQuiz() {
+      document.getElementById("startScreen").style.display = "none";
+      document.getElementById("quizCard").style.display = "block";
+    }
+
+    function fireConfetti() {
+      const colors = ["#d9a441", "#f6e3b1", "#f1d18a", "#ffffff"];
+      for (let i = 0; i < 70; i++) {
+        const conf = document.createElement("div");
+        conf.className = "confetti";
+        conf.style.left = Math.random() * 100 + "vw";
+        conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        conf.style.animationDelay = Math.random() * 0.4 + "s";
+        document.body.appendChild(conf);
+        setTimeout(() => conf.remove(), 2500);
+      }
+    }
+
+    function calculateResult() {
+      const scores = {
+        spain: 0, greece: 0, morocco: 0,
+        california: 0, alberta: 0, croatia: 0
+      };
+
+      function val(q) {
+        const el = document.querySelector('input[name="' + q + '"]:checked');
+        return el ? el.value : null;
+      }
+
+      const q1 = val("q1"), q2 = val("q2"), q3 = val("q3"), q4 = val("q4"), q5 = val("q5");
+      if (!q1 || !q2 || !q3 || !q4 || !q5) { alert("Please answer all the questions."); return; }
+
+      document.getElementById("loading").style.display = "block";
+      document.getElementById("result").style.display = "none";
+      document.getElementById("revealImageContainer").style.display = "none";
+
+      setTimeout(() => {
+        // SCORING LOGIC
+        if (q1 === "A") { scores.greece+=2; scores.alberta+=2; scores.croatia+=1; }
+        if (q1 === "B") { scores.spain+=2; scores.croatia+=2; scores.california+=1; }
+        if (q1 === "C") { scores.morocco+=2; scores.spain+=1; scores.croatia+=1; }
+
+        if (q2 === "A") { scores.spain+=2; scores.croatia+=2; }
+        if (q2 === "B") { scores.greece+=2; scores.california+=2; }
+        if (q2 === "C") { scores.morocco+=2; scores.greece+=1; }
+        if (q2 === "D") { scores.alberta+=2; scores.california+=2; }
+        if (q2 === "E") { Object.keys(scores).forEach(k => scores[k] += 1); }
+
+        if (q3 === "A") { scores.alberta+=2; scores.california+=2; }
+        if (q3 === "B") { scores.spain+=2; scores.croatia+=2; }
+        if (q3 === "C") { scores.morocco+=3; scores.spain+=1; }
+
+        if (q4 === "A") { scores.california+=3; scores.alberta+=2; }
+        if (q4 === "B") { scores.california+=1; scores.alberta+=1; scores.spain+=1; }
+        if (q4 === "C") { scores.greece+=2; scores.morocco+=2; scores.croatia+=2; scores.spain+=1; }
+
+        if (q5 === "A") { scores.greece+=2; scores.alberta+=2; scores.croatia+=1; }
+        if (q5 === "B") { scores.spain+=2; scores.croatia+=2; scores.california+=1; }
+        if (q5 === "C") { scores.morocco+=2; scores.california+=2; scores.spain+=1; }
+
+        const entries = Object.entries(scores).sort((a,b) => b[1]-a[1]);
+        const best = entries[0], second = entries[1];
+
+        const tripNames = {
+          spain: "Spain – Barcelona, Seville & Málaga",
+          greece: "Greece – Athens, Paros & Santorini",
+          morocco: "Morocco – Marrakech, Desert & Essaouira",
+          california: "California Coast – San Francisco to Santa Barbara",
+          alberta: "Alberta Rockies – Banff, Lake Louise & Moraine Lake",
+          croatia: "Croatia – Dubrovnik, Split & Hvar"
+        };
+
+        const tripWhy = {
+          spain: "You will get warm cities, amazing food, rooftop views and a balance of exploring and relaxing.",
+          greece: "You will get dreamy villages, slow island days and beautiful sunsets.",
+          morocco: "You will get lantern-lit nights, desert skies and a magical experience that feels different from everyday life.",
+          california: "You will get a cinematic coastal road trip with cliffs, beaches and cute towns.",
+          alberta: "You will get turquoise lakes, mountain air and a calm, grounding nature escape.",
+          croatia: "You will get old towns, islands, clear water and a perfect balance of history and beach time."
+        };
+
+        const images = {
+          spain: "Spain.png",
+          greece: "Greece.png",
+          morocco: "Morocco.png",
+          california: "California.png",
+          alberta: "Alberta.png",
+          croatia: "Croatia.png"
+        };
+
+        document.getElementById("loading").style.display = "none";
+
+        const resultDiv = document.getElementById("result");
+        resultDiv.style.display = "block";
+        resultDiv.innerHTML = `
+          <div class="trip-name">Your 2026 adventure match: ${tripNames[best[0]]}</div>
+          <p class="result-body">${tripWhy[best[0]]}</p>
+          <p class="runner-up"><strong>Runner-up:</strong> ${tripNames[second[0]]}</p>
+          <p class="tiny-note">We will choose together — this just shows what your answers lean toward most.</p>
+        `;
+
+        // SHOW FINAL IMAGE
+        const img = document.getElementById("revealImage");
+        img.src = images[best[0]];
+        document.getElementById("revealImageContainer").style.display = "block";
+
+        fireConfetti();
+
+      }, 1200);
+    }
+  </script>
+</body>
+</html>
