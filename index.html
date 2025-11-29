@@ -25,9 +25,7 @@
       --shadow-soft: 0 14px 35px rgba(0, 0, 0, 0.12);
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont,
@@ -84,9 +82,7 @@
       z-index: 1;
     }
 
-    h1 span.emoji {
-      font-size: 1.9rem;
-    }
+    h1 span.emoji { font-size: 1.9rem; }
 
     .subtitle {
       margin: 0 0 14px;
@@ -127,7 +123,18 @@
       overflow: hidden;
     }
 
-    .start-btn {
+    .start-screen::after {
+      content: "🎁";
+      position: absolute;
+      right: -8px;
+      bottom: -10px;
+      font-size: 3rem;
+      opacity: 0.25;
+      transform: rotate(-8deg);
+    }
+
+    .start-btn,
+    .primary-btn {
       padding: 10px 20px;
       border-radius: 999px;
       border: none;
@@ -139,6 +146,9 @@
       box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
     }
 
+    .start-btn:hover,
+    .primary-btn:hover { filter: brightness(1.05); }
+
     .quiz-card { display: none; }
 
     .question {
@@ -149,11 +159,19 @@
       border: 1px solid var(--border-soft);
     }
 
+    .question p {
+      margin-top: 0;
+      margin-bottom: 6px;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
     label {
       display: block;
       margin: 4px 0;
       font-size: 0.88rem;
       color: var(--text-muted);
+      cursor: pointer;
     }
 
     input[type="radio"] {
@@ -183,7 +201,6 @@
       animation: spin 0.9s linear infinite;
       vertical-align: text-bottom;
     }
-
     @keyframes spin { to { transform: rotate(360deg); } }
 
     #result {
@@ -208,6 +225,85 @@
       margin-bottom: 6px;
     }
 
+    .runner-up { font-size: 0.82rem; color: var(--text-muted); }
+    .tiny-note { font-size: 0.75rem; color: #998a71; margin-top: 5px; }
+
+    details.reasoning {
+      margin-top: 8px;
+      font-size: 0.85rem;
+      color: var(--text-main);
+    }
+
+    details.reasoning summary {
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    details.reasoning ul {
+      margin: 6px 0 0 18px;
+      padding: 0;
+    }
+
+    /* Reveal image framing + animation */
+    #revealImageContainer {
+      margin-top: 16px;
+      display: none;
+      border-radius: 20px;
+      padding: 6px;
+      background: radial-gradient(circle, #fff8e6, #f5e0bd);
+      border: 2px solid rgba(217, 164, 65, 0.7);
+      box-shadow: 0 18px 36px rgba(0,0,0,0.2);
+    }
+
+    #revealImage {
+      width: 100%;
+      border-radius: 14px;
+      display: block;
+      opacity: 0;
+    }
+
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(16px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal-image-visible {
+      animation: fadeInUp 0.7s ease-out forwards;
+    }
+
+    /* Extra actions */
+    .actions-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 14px;
+    }
+
+    .ghost-btn,
+    .secondary-btn {
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 0.86rem;
+      cursor: pointer;
+      border: 1px solid rgba(217, 164, 65, 0.7);
+      background: #fffdf7;
+      color: #6b5522;
+    }
+
+    .ghost-btn:hover,
+    .secondary-btn:hover {
+      background: #f9f0dd;
+    }
+
+    .copy-status {
+      text-align: center;
+      font-size: 0.78rem;
+      color: #7b6a4b;
+      margin-top: 4px;
+      display: none;
+    }
+
     /* Confetti */
     .confetti {
       position: fixed;
@@ -220,13 +316,18 @@
       z-index: 9999;
       animation: fall 2.4s linear forwards;
     }
-
     @keyframes fall {
       0% { transform: translate3d(0, -10px, 0) rotateZ(0deg); }
       100% {
         transform: translate3d(0, 110vh, 0) rotateZ(360deg);
         opacity: 0;
       }
+    }
+
+    @media (max-width: 480px) {
+      h1 { font-size: 1.6rem; }
+      .app-shell { padding: 18px 14px 24px; }
+      .question { padding: 11px 10px 9px; }
     }
   </style>
 </head>
@@ -235,61 +336,66 @@
   <div class="app-shell">
     <div class="sparkle-overlay"></div>
 
-    <img src="Merry Christmas.png" class="top-image" />
-    <img src="Which Trip Will It Be.png" class="top-image" />
+    <img src="Merry Christmas.png" class="top-image" alt="Merry Christmas Jessica" />
+    <img src="Which Trip Will It Be.png" class="top-image" alt="Which trip will it be?" />
 
     <h1><span class="emoji">🎄</span>Merry Christmas, Jessica</h1>
     <p class="subtitle">
       You’ve seen the options — now let's find your ideal 2026 adventure.
     </p>
 
+    <div class="badge-bar">
+      <div class="badge">✨ 6 trips</div>
+      <div class="badge">🧭 5 questions</div>
+      <div class="badge">🎁 1 reveal</div>
+    </div>
+
     <div class="start-screen" id="startScreen">
       <p>Answer five quick questions to reveal your perfect 2026 trip.</p>
-      <button class="start-btn" onclick="startQuiz()">Start Quiz</button>
+      <button class="start-btn" type="button" onclick="startQuiz()">Start Quiz</button>
     </div>
 
     <div id="quizCard" class="quiz-card">
-      
       <form id="tripQuiz">
 
         <div class="question">
-          <p><strong>1.</strong> What kind of energy do you want this trip to have?</p>
+          <p>1. What kind of energy do you want this trip to have?</p>
           <label><input type="radio" name="q1" value="A"> Calm and restorative.</label>
           <label><input type="radio" name="q1" value="B"> A balanced mix.</label>
           <label><input type="radio" name="q1" value="C"> Lively and exciting.</label>
         </div>
 
         <div class="question">
-          <p><strong>2.</strong> What type of scenery excites you most?</p>
-          <label><input type="radio" name="q2" value="A"> Pretty streets & architecture</label>
-          <label><input type="radio" name="q2" value="B"> Waterfront towns</label>
-          <label><input type="radio" name="q2" value="C"> Magical evenings / sunsets</label>
-          <label><input type="radio" name="q2" value="D"> Nature / cliffs / lakes</label>
-          <label><input type="radio" name="q2" value="E"> A mix of everything</label>
+          <p>2. What type of scenery excites you most?</p>
+          <label><input type="radio" name="q2" value="A"> Pretty streets & architecture.</label>
+          <label><input type="radio" name="q2" value="B"> Waterfront towns.</label>
+          <label><input type="radio" name="q2" value="C"> Magical evenings & sunsets.</label>
+          <label><input type="radio" name="q2" value="D"> Nature, cliffs or lakes.</label>
+          <label><input type="radio" name="q2" value="E"> A mix of everything.</label>
         </div>
 
         <div class="question">
-          <p><strong>3.</strong> How different from home do you want the culture to feel?</p>
-          <label><input type="radio" name="q3" value="A"> Familiar & easy</label>
-          <label><input type="radio" name="q3" value="B"> A bit different</label>
-          <label><input type="radio" name="q3" value="C"> Very different & magical</label>
+          <p>3. How different from home do you want the culture to feel?</p>
+          <label><input type="radio" name="q3" value="A"> Familiar & easy.</label>
+          <label><input type="radio" name="q3" value="B"> A bit different.</label>
+          <label><input type="radio" name="q3" value="C"> Very different & magical.</label>
         </div>
 
         <div class="question">
-          <p><strong>4.</strong> Do you want to drive during this trip?</p>
-          <label><input type="radio" name="q4" value="A"> Yes – road trip vibes</label>
-          <label><input type="radio" name="q4" value="B"> A little is fine</label>
-          <label><input type="radio" name="q4" value="C"> Prefer not to drive</label>
+          <p>4. Do you want to drive during this trip?</p>
+          <label><input type="radio" name="q4" value="A"> Yes – road trip vibes.</label>
+          <label><input type="radio" name="q4" value="B"> A little is fine.</label>
+          <label><input type="radio" name="q4" value="C"> Prefer not to drive.</label>
         </div>
 
         <div class="question">
-          <p><strong>5.</strong> What’s your ideal daily pace?</p>
-          <label><input type="radio" name="q5" value="A"> Mostly relaxing</label>
-          <label><input type="radio" name="q5" value="B"> Mixed / balanced</label>
-          <label><input type="radio" name="q5" value="C"> Full days & exploring</label>
+          <p>5. What’s your ideal daily pace?</p>
+          <label><input type="radio" name="q5" value="A"> Mostly relaxing.</label>
+          <label><input type="radio" name="q5" value="B"> Mixed / balanced.</label>
+          <label><input type="radio" name="q5" value="C"> Full days & exploring.</label>
         </div>
 
-        <button type="button" class="start-btn" onclick="calculateResult()">
+        <button type="button" class="primary-btn" onclick="calculateResult()">
           Reveal My 2026 Adventure
         </button>
 
@@ -301,9 +407,19 @@
 
       <div id="result"></div>
 
-      <div id="revealImageContainer" style="margin-top:16px; display:none;">
-        <img id="revealImage" src="" style="width:100%; border-radius:18px;" />
+      <div id="revealImageContainer">
+        <img id="revealImage" src="" alt="Your 2026 trip image" />
       </div>
+
+      <div id="extraActions" class="actions-row" style="display:none;">
+        <button type="button" class="ghost-btn" onclick="restartQuiz()">Start over</button>
+        <button type="button" class="ghost-btn" onclick="copyLink()">Copy link</button>
+        <a id="itineraryLink" href="#" target="_blank" class="secondary-btn">
+          Open full itinerary
+        </a>
+      </div>
+
+      <div id="copyStatus" class="copy-status">Link copied to clipboard ✨</div>
     </div>
   </div>
 
@@ -311,6 +427,7 @@
     function startQuiz() {
       document.getElementById("startScreen").style.display = "none";
       document.getElementById("quizCard").style.display = "block";
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
     function fireConfetti() {
@@ -338,14 +455,19 @@
       }
 
       const q1 = val("q1"), q2 = val("q2"), q3 = val("q3"), q4 = val("q4"), q5 = val("q5");
-      if (!q1 || !q2 || !q3 || !q4 || !q5) { alert("Please answer all the questions."); return; }
+      if (!q1 || !q2 || !q3 || !q4 || !q5) {
+        alert("Please answer all the questions.");
+        return;
+      }
 
       document.getElementById("loading").style.display = "block";
       document.getElementById("result").style.display = "none";
       document.getElementById("revealImageContainer").style.display = "none";
+      document.getElementById("extraActions").style.display = "none";
+      document.getElementById("copyStatus").style.display = "none";
 
       setTimeout(() => {
-        // SCORING LOGIC
+        // scoring
         if (q1 === "A") { scores.greece+=2; scores.alberta+=2; scores.croatia+=1; }
         if (q1 === "B") { scores.spain+=2; scores.croatia+=2; scores.california+=1; }
         if (q1 === "C") { scores.morocco+=2; scores.spain+=1; scores.croatia+=1; }
@@ -398,6 +520,36 @@
           croatia: "Croatia.png"
         };
 
+        // optional: PDFs you can create/upload later
+        const itineraries = {
+          spain: "Itinerary-Spain.pdf",
+          greece: "Itinerary-Greece.pdf",
+          morocco: "Itinerary-Morocco.pdf",
+          california: "Itinerary-California.pdf",
+          alberta: "Itinerary-Alberta.pdf",
+          croatia: "Itinerary-Croatia.pdf"
+        };
+
+        // build reasoning bullets
+        const reasons = [];
+        if (q1 === "A") reasons.push("You chose a calmer, more restorative overall energy.");
+        if (q1 === "B") reasons.push("You wanted a balanced mix of exploring and relaxing.");
+        if (q1 === "C") reasons.push("You leaned toward a livelier, more exciting energy.");
+        if (q2 === "A") reasons.push("You’re drawn to pretty streets and architecture.");
+        if (q2 === "B") reasons.push("Waterfront towns and harbours appealed to you.");
+        if (q2 === "C") reasons.push("Magical evenings and sunsets stood out for you.");
+        if (q2 === "D") reasons.push("Big, dramatic natural views attracted you.");
+        if (q2 === "E") reasons.push("You like a mix of different types of scenery.");
+        if (q3 === "A") reasons.push("You prefer somewhere that feels easy and familiar.");
+        if (q3 === "B") reasons.push("You wanted some cultural difference, but not too extreme.");
+        if (q3 === "C") reasons.push("You’re open to a very different and magical cultural experience.");
+        if (q4 === "A") reasons.push("You were comfortable with a road trip style and driving.");
+        if (q4 === "B") reasons.push("You were okay with a bit of driving but not constantly.");
+        if (q4 === "C") reasons.push("You preferred to avoid driving where possible.");
+        if (q5 === "A") reasons.push("You wanted mostly relaxing days with one main thing to do.");
+        if (q5 === "B") reasons.push("You chose a balanced daily rhythm: some plans, some downtime.");
+        if (q5 === "C") reasons.push("You were happy with fairly full days and lots to see and do.");
+
         document.getElementById("loading").style.display = "none";
 
         const resultDiv = document.getElementById("result");
@@ -407,16 +559,56 @@
           <p class="result-body">${tripWhy[best[0]]}</p>
           <p class="runner-up"><strong>Runner-up:</strong> ${tripNames[second[0]]}</p>
           <p class="tiny-note">We will choose together — this just shows what your answers lean toward most.</p>
+          <details class="reasoning">
+            <summary>Why this trip fits your answers</summary>
+            <ul>${reasons.map(r => `<li>${r}</li>`).join("")}</ul>
+          </details>
         `;
 
-        // SHOW FINAL IMAGE
         const img = document.getElementById("revealImage");
+        img.classList.remove("reveal-image-visible");
         img.src = images[best[0]];
+        // force reflow to restart animation
+        void img.offsetWidth;
+        img.classList.add("reveal-image-visible");
         document.getElementById("revealImageContainer").style.display = "block";
 
-        fireConfetti();
+        const extra = document.getElementById("extraActions");
+        extra.style.display = "flex";
+        const itLink = document.getElementById("itineraryLink");
+        itLink.href = itineraries[best[0]];
 
+        fireConfetti();
+        window.scrollTo({ top: resultDiv.offsetTop - 20, behavior: "smooth" });
       }, 1200);
+    }
+
+    function restartQuiz() {
+      document.getElementById("tripQuiz").reset();
+      document.getElementById("result").style.display = "none";
+      document.getElementById("revealImageContainer").style.display = "none";
+      document.getElementById("extraActions").style.display = "none";
+      document.getElementById("copyStatus").style.display = "none";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function copyLink() {
+      const url = window.location.href;
+      const status = document.getElementById("copyStatus");
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(() => {
+          status.textContent = "Link copied to clipboard ✨";
+          status.style.display = "block";
+          setTimeout(() => status.style.display = "none", 2000);
+        }).catch(() => {
+          status.textContent = "Copy failed — you can copy the URL from the address bar.";
+          status.style.display = "block";
+        });
+      } else {
+        status.textContent = "Copy not supported — you can copy the URL from the address bar.";
+        status.style.display = "block";
+      }
     }
   </script>
 </body>
